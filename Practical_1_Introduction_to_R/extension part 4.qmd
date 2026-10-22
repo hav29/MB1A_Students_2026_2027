@@ -1,0 +1,30 @@
+---
+title: "extension part 4"
+author: "Lili"
+format: html
+---
+
+```{r}
+library("httr2")
+url <- "https://api.ukhsa-dashboard.data.gov.uk/themes/infectious_disease/sub_themes/bloodstream_infection/topics/MRSA/geography_types/Nation/geographies/England/metrics/MRSA_cases_countsByOnsetTypeByMonth"
+url <- paste0(url, "?page_size=365")
+print(url)
+
+api_request <- request(url)
+response <- req_perform(api_request)
+json_response <- resp_body_json(response)
+
+str(json_response, max.level = 1)
+
+result_df <- bind_rows(json_response$results)
+gt(head(result_df))
+
+print(unique(pull(result_df, stratum)))
+print(unique(pull(result_df, sex)))
+print(unique(pull(result_df, age)))
+# check whether any of these columns contain more than one value:
+
+filt <- filter(result_df, stratum == "Total cases")
+gt(filt)
+
+```

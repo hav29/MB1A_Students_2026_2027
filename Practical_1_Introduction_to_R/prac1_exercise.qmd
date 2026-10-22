@@ -61,3 +61,92 @@ num_after_1 <-1432
 num_after_2 <-7543
 ```
 
+# Part 4
+
+install.packages("") and then load by library()
+```{r}
+install.packages("fortunes")
+library(fortunes)
+
+fortune()
+```
+
+```{r}
+library(tidyverse)
+library(gt)
+```
+
+Vectors = multiple variables, everything needs to be the same type.
+
+```{r}
+my_first_vector <- c(1, 5, 9)
+print(my_first_vector)
+```
+
+```{r}
+cell_ID <- c(cell_ID_1,cell_ID_2)
+treated <- c( treated_1, treated_2)
+num_before <- c(num_before_1, num_before_2)
+num_after <- c(num_after_1, num_after_2)
+
+print(cell_ID)
+print(treated)
+print(num_before)
+print(num_after)
+```
+
+Once our values are in a vector, we can access them using an index, which refers to the position of the value within the vector. Indices are indicated within square brackets - []
+
+```{r}
+all_my_pets <- c("dog", "horse", "guinea pig", "chicken", "cat")
+pet_4 <- all_my_pets[4]
+print(pet_4)
+```
+
+Vectorisation : apply same function to many variable in a vector at once
+
+```{r}
+x <- c(2, -4, 6, -2)
+x * 2
+x > 5
+sum(x)
+abs(x)
+```
+
+Data frame
+
+```{r}
+
+data_frame <- tibble(
+   fruit = c("apple", "pear", "banana"),
+  length = c(22, 30, 55),
+  weight = c(150, 165, 170)
+)
+
+print(data_frame)
+
+gt(data_frame)
+```
+
+```{r}
+
+prac1_table <- tibble(
+  
+    cell_ID = c(cell_ID_1, cell_ID_2),
+    treated = c(treated_1, treated_2),
+    num_before = c(num_before_1, num_before_2),
+    num_after = c(num_after_1, num_after_2)
+)
+
+gt(prac1_table)
+```
+
+
+CSV files
+
+```{r}
+weather <- read_csv("data/weather_data.csv")
+
+gt(weather)
+```
+
