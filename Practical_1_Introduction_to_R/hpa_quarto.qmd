@@ -1,0 +1,37 @@
+---
+title: "MB1A Practical 1 Exercise 1"
+author: "Lili"
+format: html
+---
+The Human Protein Atlas (HPA) is a research project which was initiated in 2003 with the aim of mapping all the human proteins in cells, tissues, and organs using various omics technologies.
+
+We are going to look at a small amount of data from the HPA brain resource, which explores the distribution of proteins in various regions of the mammalian brain.
+There is a description of the brain data [here](https://www.proteinatlas.org/humanproteome/brain)
+
+The BRAIN SUMMARY table shows the number of genes which were categorised as regionally elevated in different regions of the brain. Genes were classed as regionally elevated if they showed distinctly higher expression in these regions than in the rest of the brain.
+
+Calculate the total number of genes with regionally elevated expression in the forebrain - that is, the cerebral cortex, basal ganglia, thalamus and hypothalamus - regions in human, pig and mouse.
+
+```{r}
+human_cerebralcortex <- 180
+human_basalganglia <- 83
+human_thalamus <- 57
+human_hypothalamus <- 110
+
+total_human <- sum(human_cerebralcortex, human_basalganglia, human_thalamus, human_hypothalamus)
+
+pig_cerebralcortex <- 109
+pig_basalganglia <- 157
+pig_thalamus <- 31
+pig_hypothalamus <- 45
+
+total_pig <- sum(pig_cerebralcortex, pig_basalganglia, pig_thalamus, pig_hypothalamus)
+
+mouse_cerebralcortex <- 55
+mouse_basalganglia <- 185
+mouse_thalamus <- 60
+mouse_hypothalamus <- 98
+
+total_mouse <- sum(mouse_thalamus, mouse_cerebralcortex, mouse_basalganglia, mouse_hypothalamus)
+```
+ The species with the highest number of genes with elevated expression is human.
