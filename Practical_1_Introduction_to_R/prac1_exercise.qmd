@@ -1,0 +1,63 @@
+---
+title: "prac1_exercise"
+author: "Lili"
+format: html
+---
+# Part 3
+
+Functions
+- round()
+
+```{r}
+
+print(round(3.14159))
+
+round(3.14159)
+
+round(3.14159, digits = 2)
+
+
+```
+
+- seq() generates a sequence of number with arguments: from - to - by
+- rep() repeats a value with argument : x (number) and times (number of times)
+
+When writing a function call in RStudio, press the Tab key after the opening bracket (() to see a list of the arguments available for that function.
+
+```{r}
+seq(1,10,2)
+print(seq(by = 2, from = 1, to = 10))
+
+rep(5,7)
+rep(x=5, times = 7)
+
+```
+```{r}
+x <- 3.55
+y <- "apple"
+z <- TRUE
+
+print(x)
+print (y)
+print(z)
+
+class(x)
+class(y)
+class(z)
+
+```
+```{r}
+
+cell_ID_1 <- "CX1"
+cell_ID_2 <- "CX2"
+
+treated_1 <- TRUE
+treated_2 <- FALSE
+
+num_before_1 <- 5415
+num_before_2 <-8123
+
+num_after_1 <-1432
+num_after_2 <-7543
+```
+
