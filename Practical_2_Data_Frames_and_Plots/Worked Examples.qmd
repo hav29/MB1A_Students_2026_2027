@@ -171,7 +171,6 @@ gt(spring_data)
 gt(autumn_data)
 ```
 ```{r}
-
 #reproduce the spring migration plot
 
 gt(spring_data)
@@ -192,6 +191,8 @@ max_lat <- spring_data |>
   pull(Latitude) |>
   max()
 
+library(RColorBrewer)
+
 ggplot(spring_data, aes( 
   x = Longitude,y = Latitude,
   color=Site,
@@ -199,13 +200,18 @@ ggplot(spring_data, aes(
   geom_point(size=3)+
   annotation_borders(linewidth =0.2) + #add the countries borders in
   coord_quickmap(xlim = c(min_lon - 2, max_lon + 2), ylim = c(min_lat-2, max_lat+2)) +
+  geom_path(aes(group=Site), linewidth = 0.5)+
+  scale_color_brewer(palette = "Paired") +
   ggtitle("Pied Flycatcher Ficedula hypoleuca Spring Migration Routes ") +
   xlab("Longitude (°)")+
   ylab("Latitude(°)") +
-  theme_minimal()
+  theme_classic()
+```
 
 
-
+```{r}
 #somehow, coord_quickmap keep the map from being skewed? for non map data, use coord_cartesian instead to. keep the shape of the plot.
  
+
+
 ```
