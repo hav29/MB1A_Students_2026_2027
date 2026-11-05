@@ -1,0 +1,109 @@
+---
+title: "Practical_2_Data_Frames_and_Plots/visualisation_exercise"
+---
+
+```{r}
+library(tidyverse)
+library(gt)
+library(janitor)
+library(lubridate)
+
+```
+
+```{r}
+
+# Read the data
+
+locations <- read.csv("data/Arctic and red fox coexistence at the edge of Arctic.csv") |>
+  clean_names() |>
+  mutate(date = as_date(timestamp))
+
+gt(head(locations))
+
+colnames(locations)
+
+```
+
+```{r}
+
+#Process data
+
+locations.processed <- locations |>
+  select(date,individual_local_identifier, individual_taxon_canonical_name, location_long, location_lat) |>
+  group_by(date, individual_local_identifier, individual_taxon_canonical_name) |>
+  rename(Taxon = individual_taxon_canonical_name, Individual = individual_local_identifier) |>
+  summarise(
+    Latitude = median(location_lat, na.rm = TRUE),
+    Longitude = median(location_long, na.rm = TRUE)
+  )
+  
+gt(locations.processed)
+dim(locations.processed)
+
+
+```
+```{r}
+
+min_long <- locations.processed |>
+  pull(Longitude) |>
+    min()
+  
+
+max_long <- locations.processed |>
+  pull(Longitude) |>
+    max()
+
+min_lati <- locations.processed |>
+  pull(Latitude) |>
+    min()
+
+max_lati <- locations.processed |>
+  pull(Latitude) |>
+    max()
+
+ggplot(locations.processed, aes(
+  x = Longitude,
+  y = Latitude,
+  colour = Taxon)) + 
+  annotation_borders(fill = "darkgreen", colour = "grey40",
+               alpha = 0.2, linewidth = 0.2) +
+  geom_point(size=0.1)+
+  coord_quickmap(xlim = c(min_long - 0.5, max_long + 0.5), ylim = c(min_lati - 0.5, max_lati +0.5)) +
+  ggtitle("Artic fox and Red fox \n coexistence at the edge of Artic") +
+  xlab("Longitude (°)")+
+  ylab("Latitude(°)") +
+  theme_bw() +
+  theme(legend.position = "left")+
+  theme(panel.background = element_rect(fill = scales::alpha("steelblue", 0.2)))
+  
+
+
+
+```
+
+```{r}
+
+ggplot(locations.processed, aes(
+  x = Longitude,
+  y = Latitude,
+  colour = Individual)) + 
+  annotation_borders(fill = "darkgreen", colour = "grey40",
+               alpha = 0.2, linewidth = 0.2) +
+  geom_point(size=0.1)+
+  coord_quickmap(xlim = c(min_long - 0.5, max_long + 0.5), ylim = c(min_lati - 0.5, max_lati +0.5)) +
+  ggtitle("Arctic fox and Red fox \n coexistence at the edge of Artic") +
+  xlab("Longitude (°)")+
+  ylab("Latitude(°)") +
+  theme_bw() +
+  theme(legend.position = "left")+
+  theme(panel.background = element_rect(fill = scales::alpha("steelblue", 0.2))) +
+  guides(colour = guide_legend(ncol = 2,
+                               override.aes = list(size = 2)))
+
+  
+```
+
+
+
+
+
