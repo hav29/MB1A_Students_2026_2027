@@ -74,8 +74,9 @@ ggplot(locations.processed, aes(
   ylab("Latitude(°)") +
   theme_bw() +
   theme(legend.position = "left")+
-  theme(panel.background = element_rect(fill = scales::alpha("steelblue", 0.2)))
-  
+  theme(panel.background = element_rect(fill = scales::alpha("steelblue", 0.2)))+
+  guides(color = guide_legend(override.aes=list(size=2)))
+
 
 
 
