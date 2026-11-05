@@ -170,4 +170,42 @@ autumn_data <- combined_bird_pivot |>
 gt(spring_data)
 gt(autumn_data)
 ```
+```{r}
+
+#reproduce the spring migration plot
+
+gt(spring_data)
+
+min_lon <- spring_data |>
+  pull(Longitude) |>
+  min()
+
+max_lon <- spring_data |>
+  pull(Longitude) |>
+  max()
+
+min_lat <- spring_data |>
+  pull(Latitude) |>
+  min()
+
+max_lat <- spring_data |>
+  pull(Latitude) |>
+  max()
+
+ggplot(spring_data, aes( 
+  x = Longitude,y = Latitude,
+  color=Site,
+  shape=Location_Type)) +
+  geom_point(size=3)+
+  annotation_borders(linewidth =0.2) + #add the countries borders in
+  coord_quickmap(xlim = c(min_lon - 2, max_lon + 2), ylim = c(min_lat-2, max_lat+2)) +
+  ggtitle("Pied Flycatcher Ficedula hypoleuca Spring Migration Routes ") +
+  xlab("Longitude (°)")+
+  ylab("Latitude(°)") +
+  theme_minimal()
+
+
+
+#somehow, coord_quickmap keep the map from being skewed? for non map data, use coord_cartesian instead to. keep the shape of the plot.
  
+```
