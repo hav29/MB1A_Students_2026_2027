@@ -1,0 +1,49 @@
+---
+title: "Practical_2_Data_Frames_and_Plots/prac2_exercises"
+author: "Lili"
+---
+
+```{r}
+
+#pipe function -  link multiple steps in an analysis.
+
+numbers <- c( 2, 4, 6, 10)
+
+numbers |> sum()
+
+my_result <- numbers |>
+  sum() |>
+  sqrt() |> #square root
+  round()
+
+print(my_result)
+
+#do 3 functions to the number vectors series in order from top down
+
+input_vec <- c(5, -10, 4, -3)
+
+results <- input_vec |> 
+    mean() |>
+    abs() |>
+    round () 
+print (results)
+
+
+# compare functions to see certain rows only:
+
+#Operator	Meaning
+#==	is equal to
+#!=	is not equal to
+#>	is greater than
+#>=	is greater than or equal to
+#<	is less than
+#<=	is less than or equal to
+
+y <-7
+print(y==7)
+print(y<15)
+print(y>20)
+print(y<=20)
+
+```
+

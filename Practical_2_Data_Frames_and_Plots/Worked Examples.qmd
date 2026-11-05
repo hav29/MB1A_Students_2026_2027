@@ -1,0 +1,59 @@
+---
+title: "Practical_2_Data_Frames_and_Plots/worked_example"
+author: "Lili"
+---
+```{r}
+library(gt)
+library(tidyverse)
+library(maps)
+
+#viewing data
+
+bird_breeding_sites_df<-read_csv("data/breeding_site_locations.csv")
+gt(bird_breeding_sites_df)
+
+migratory_connectivity_df <- read_csv("data/migratory_connectivity_dataset.csv")
+gt(migratory_connectivity_df)
+gt(head(migratory_connectivity_df)) 
+#this functon visualises the first 10 rows of the dataframe
+
+glimpse(migratory_connectivity_df)
+colnames(migratory_connectivity_df)
+```
+
+```{r}
+#cleaning data: selecting only columns we want. Let’s select just the Site, Longitude and Latitude columns from our bird_breeding_sites table.
+
+
+breeding_selected <- bird_breeding_sites_df |>
+  select(Site, Longitude, Latitude) |>
+  distinct()
+
+gt(breeding_selected)
+
+migration_selected <- migratory_connectivity_df |>
+    select(Site, winterLongitude, winterLatitude, pslon, pslat, iblon, iblat, awestlon, awestlat) |>
+    distinct() |> #select only unique rows
+    rename(Winter_Longitude = winterLongitude, Winter_Latitude=winterLatitude, Stopover_Longtitude = pslon, Stopover_Latitude=pslat, Iberian_Longtitude=iblon, Iberian_Latitude=iblat, Westmost_Longtitude=awestlon, Westmost_Latitude=awestlat)
+
+gt(migration_selected) 
+
+#use filter function to select only desired rows:
+
+bird_breeding_dartmoor <- bird_breeding_sites_df
+
+```
+
+```{r}
+
+#exclude Site==Spain
+
+migration_exc <-  migration_selected |>
+  filter(Site != "Spain")
+breeding_exc <- breeding_selected |>
+  filter(Site != "Spain")
+
+gt(migration_exc)
+gt(breeding_exc)
+```
+
