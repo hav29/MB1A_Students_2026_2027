@@ -5,6 +5,7 @@ author: "Lili"
 ```{r}
 library(gt)
 library(tidyverse)
+library(dplyr)
 library(maps)
 
 #viewing data
@@ -27,16 +28,17 @@ colnames(migratory_connectivity_df)
 
 breeding_selected <- bird_breeding_sites_df |>
   select(Site, Longitude, Latitude) |>
-  distinct()
+  distinct() |>
+  rename(Breeding_Longitude = Longitude, Breeding_Latitude = Latitude)
+
 
 gt(breeding_selected)
 
 migration_selected <- migratory_connectivity_df |>
     select(Site, winterLongitude, winterLatitude, pslon, pslat, iblon, iblat, awestlon, awestlat) |>
     distinct() |> #select only unique rows
-    rename(Winter_Longitude = winterLongitude, Winter_Latitude=winterLatitude, Stopover_Longtitude = pslon, Stopover_Latitude=pslat, Iberian_Longtitude=iblon, Iberian_Latitude=iblat, Westmost_Longtitude=awestlon, Westmost_Latitude=awestlat)
+    rename(Winter_Longitude = winterLongitude, Winter_Latitude=winterLatitude, Stopover_Longitude = pslon, Stopover_Latitude=pslat, Iberian_Longitude=iblon, Iberian_Latitude=iblat, Westmost_Longitude=awestlon, Westmost_Latitude=awestlat)
 
-gt(migration_selected) 
 
 #use filter function to select only desired rows:
 
@@ -55,5 +57,117 @@ breeding_exc <- breeding_selected |>
 
 gt(migration_exc)
 gt(breeding_exc)
+
+print(dim(breeding_exc))
+print(dim(migration_exc))
 ```
 
+```{r}
+
+# Processing data: For migration data, there are a lot. We group data using the group_by() function, then summarise for each group using the summarise() function.
+
+migration_grouped <- migration_exc |> group_by(Site)
+glimpse(migration_grouped)
+
+#doesnt change the data frame, but adds info to how R sees the dataframe.
+# na.rm=TRUE tells R to ignore any value of NA
+#mean data frame:
+
+migration_summary <- migration_grouped |>
+  summarise(
+    Stopover_Longitude = median(Stopover_Longitude, na.rm = TRUE),
+    Stopover_Latitude = mean(Stopover_Latitude, na.rm = TRUE),
+    Iberian_Longitude = mean(Iberian_Longitude, na.rm = TRUE),
+    Iberian_Latitude = mean(Iberian_Latitude, na.rm = TRUE),
+    Westmost_Longitude = mean(Westmost_Longitude, na.rm = TRUE),
+    Westmost_Latitude = mean(Westmost_Latitude, na.rm = TRUE),
+    Winter_Longitude = mean(Winter_Longitude, na.rm = TRUE),
+    Winter_Latitude = mean(Winter_Latitude, na.rm = TRUE)
+  )
+gt(migration_summary)
+
+#apply the same function across multiple columns.
+
+migration_summary_better <- migration_exc |>
+  group_by(Site) |>
+  summarise(
+    across(
+      c(Stopover_Latitude, Stopover_Longitude,
+        Iberian_Longitude, Iberian_Latitude,
+        Westmost_Longitude, Westmost_Latitude,
+        Winter_Longitude, Winter_Latitude),
+      ~ median(.x, na.rm =TRUE)
+    )
+  )
+
+gt(migration_summary_better)
+
+
+```
+```{r}
+
+#join function:
+#full join - add everything, NA where no data
+#in join - only columns where both have data
+# left or right join
+
+
+combined_bird_data <- full_join(breeding_exc, migration_summary)
+
+gt(combined_bird_data)
+
+```
+
+
+```{r}
+
+#transform data table from wide to long format
+#Select the columns to reshape: take any columns ending in _Longitude or _Latitude using cols = ends_with(c("_Longitude", "_Latitude")).
+#Split the column names: separate the original column names wherever there is an underscore using names_sep = "_".
+#Create new column names: use the first part of the original column name to create a new column called Location_Type, and use the second part (Longitude or Latitude) to create new columns containing the values. This is specified with names_to = c("Location_Type", ".value").
+
+combined_bird_pivot <- combined_bird_data |>
+  pivot_longer(
+    cols = ends_with(c("_Longitude", "_Latitude")),
+    names_sep = "_",
+    names_to = c("Location_Type", ".value")
+  )
+
+gt(combined_bird_pivot)
+
+#try the reverse
+reverse_bird_pivot <- combined_bird_pivot |>
+  pivot_wider(
+    names_from = Location_Type,
+    values_from = c(Longitude, Latitude),
+    names_glue = "{Location_Type}_{.value}"
+  
+  )
+
+gt(reverse_bird_pivot)
+
+```
+```{r}
+
+
+#Subsetting the data into SPRING and AUTUMM data
+#The spring migration data has the following values in the Location_Type column: Breeding, Stopover, Winter
+#The autumn migration data has the following values in the Location_Type column: Breeding, Iberian, Westmost, Winter
+
+spring_keep <- c("Breeding", "Stopover", "Winter")
+autumn_keep <- c("Breeding", "Iberian", "Westmost", "Winter")
+
+#In spring, the birds migrate north from their wintering grounds in West Africa. After crossing the Sahara, they stop over near the Mediterranean before continuing to their breeding sites in the north (Fig. 1B in the paper).
+
+#In autumn, the birds take a much longer route. They migrate south from their breeding sites, but — regardless of how far east their breeding site is — they all travel via the Iberian Peninsula (Spain and Portugal) before following the west coast of Africa to their wintering grounds (Fig. 1A in the paper). Why they take this detour is currently unknown.
+
+spring_data <- combined_bird_pivot |>
+  filter(Location_Type %in% spring_keep)
+
+autumn_data <- combined_bird_pivot |>
+  filter(Location_Type %in% autumn_keep)
+
+gt(spring_data)
+gt(autumn_data)
+```
+ 
